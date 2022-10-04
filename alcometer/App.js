@@ -1,10 +1,9 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, SafeAreaView, ScrollView, TextInput, Pressable, Button, Alert } from 'react-native';
+import { Text, View, SafeAreaView, ScrollView, TextInput, Pressable, Button, Alert } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import Styles from './Styles';
 import { useState, useCallback } from 'react';
 import Radiobutton from './components/Radiobutton';
-import Calculation from './components/Calculation';
 
 
 
@@ -13,33 +12,34 @@ export default function App() {
 
 const [weight, setWeight] = useState(0);
 const [bottles, setBottles] = useState(0);
-const [total, setTotal] = useState(0);
+const [promilles, setPromilles] = useState(0);
 const [hours, setHours] = useState(0);
-const [gender, setGender] = useState(0);
+const [gender, setGender] = useState('Male');
+
 //radiobuttoniin tarvitsemat tilamuuttujat
 const genderOptions=[
-  {label: 'Woman', value: 'Woman'},
   {label: 'Male', value: 'Male'},
+  {label: 'Female', value: 'Female'},
 ]
 
 //Dropdown 1- Bottles tarvitsemat toiminallisuudet
 const [open, setOpen] = useState(false);
-const [value, setValue] = useState(null);
 const [items, setItems] = useState([
   {label:'1 bottles', value: 1},
   {label:'2 bottles', value: 2},
   {label:'3 bottles', value: 3},
   {label:'4 bottles', value: 4},
   {label:'5 bottles', value: 5},
-  {label:'6 bottles', value: 6},
-
-]);
+  {label:'6 bottles', value: 6}
+]
+);
 //Dropdown 2-Time tilamuuttujat
-const [openAnother, setOpenAnother] = useState(0);
+const [openAnother, setOpenAnother] = useState(false);
 const [anotherItems, setAnotherItems] = useState([
-  {label: '1 hours', value: 1},
-  {label: '2 hours', value: 2},
-  {label: '3 hours', value: 3},
+  {label:'0 hours', value: 0},
+  {label:'1 hours', value: 1},
+  {label:'2 hours', value: 2},
+  {label:'3 hours', value: 3},
   {label:'4 hours', value: 4},
   {label:'5 hours', value: 5},
   {label:'6 hours', value: 6},
@@ -56,86 +56,100 @@ const onAnotherOpen = useCallback(() => {
   setOpen(false);
 }, []);
 
-const calculatePromilles = () => {
+const calculate = () => {
 
-  if(weight >0){
+  if (weight > 0){
     if (bottles === 0){
       Alert.alert(
-        "Amount of bottles is missing",
-        "Please select amount of drank bottles"
+        "Bottles amount missing!",
+        "Select amount of bottles"
       )
       return
     } else if (hours === 0){
       Alert.alert(
-        "Time is missing",
-        "Please select time"
+        "Time is missing!",
+        "Please select time."
       )
       return
     }
-  }
-let grams = (bottles * 0.33) * 8 * 4.5;
-let burning = weight / 10;
-let gramsLeft = grams - burning * hours;
-let result; 
+    let grams = (bottles * 0.33) * 8 * 4.5;
+    let burning = weight / 10;
+    let gramsLeft = grams - burning * hours;
+    let result;
+    if(gender === 'Male'){
+      result = gramsLeft / (weight * 0.7)
 
-if (gender === 'Woman'){
-  result = gramsLeft/ (weight * 0.6)
+    } else {
+      result = gramsLeft / (weight * 0.6)
+    }
+    if(result < 0){
+      setPromilles(0)
+    } else {
+      setPromilles(result);
+    }
+  }
+  else {
+    Alert.alert(
+      "Weight missing",
+      "Type in your weight in kg and calculate again"
+    )
+    return
+  } 
 }
-else{
-  result = gramsLeft /(weight* 0.7)
-}
-if(result < 0){
-  setTotal(result.toFixed(2));
-}else
-setTotal(0.00);
-}
+
+DropDownPicker.setListMode("SCROLLVIEW")
 
   return (
     <SafeAreaView style={Styles.container}>
       <Text style={Styles.heading}>Alcometer</Text>
       <ScrollView style={Styles.scrollView}>
-        <View style={Styles.form}>
-          <Text style={Styles.label}>Weighhsst</Text>
-          <TextInput placeholder='Enter your weight' value={weight} onChangeText={text => setWeight(text)} keyboardType='number-pad' ></TextInput>
+      <StatusBar style='auto'/>
+
+      <View style={Styles.form}>
+          <Text style={Styles.label}>Weight</Text>
+          <TextInput style={Styles.Input} placeholder='Enter your weight' value={weight} onChangeText={text => setWeight(text)} keyboardType='number-pad' ></TextInput>
           <Text style={Styles.label}>Bottles</Text>
-        </View> 
         <View style={{zIndex:10}}>
           <DropDownPicker 
-          open={open} setOpen={setOpen} onOpen={onOpen} 
-          value={value} setValue={setValue} 
-          items={items} setItems={setItems}/>
+          open={open} 
+          onOpen={onOpen} 
+          value={bottles} 
+          items={items}
+          setOpen={setOpen} 
+          setValue={setBottles} 
+          setItems={setItems}/>
         </View>
-        <View style={Styles.form}>
-          <Text style={Styles.label}>Time</Text>
-        </View>
-          <View style={{zIndex:8}}>
+        <Text style={Styles.label}>Time</Text>
+        <View style={{zIndex:9}}>
           <DropDownPicker 
-               open={openAnother}
-               onOpen={onAnotherOpen}
-               value= {hours} setValue={setHours}
-               items={anotherItems}
-               setOpen={setOpenAnother}
-               setItems={setAnotherItems}
+            open={openAnother}
+            onOpen={onAnotherOpen}
+            value= {hours} 
+            items={anotherItems}
+            setOpen={setOpenAnother}
+            setValue={setHours}
+            setItems={setAnotherItems}
              /> 
-          </View>
-        <View style={Styles.form}>
+        </View>
+        
           <Text style={Styles.label}>Gender</Text>
-          <Radiobutton genderOption={genderOptions} onPress={(value) => {setGender}}/>
-        </View>
+          <Radiobutton genderOption={genderOptions} onPress={(value) => {setGender(value)}}/>
+
+      </View>
+
         <View style={Styles.resultContainer}>
-          <Text style={[total <= 0.5 ? Styles.resultTextGreen : total >= 0.5 && total <= 1.2 ? Styles.resultTextYellow : Styles.resultTextRed]}>{total}</Text>
-         {/*  <Button onPress={()=> calculatePromilles()} title={'Calculate'}></Button> */}
-         <Pressable onPress={calculatePromilles} title= {'calculate'}>
-        
-        
-        </Pressable>
+          <Text style={[promilles <= 0.5 ? Styles.resultTextGreen : promilles >= 0.5 && promilles <= 1.2 ? Styles.resultTextRed : Styles.resultTextYellow]}>{promilles.toFixed(2)}</Text>
         </View>
-      <StatusBar style='auto'/>
+
+        <Pressable style={Styles.calculateButton} onPress={calculate}>
+          <Text style={Styles.buttonText}>Calculate</Text>
+        </Pressable> 
+       
+
+  
       </ScrollView>
 
 
     </SafeAreaView>
   );
 }
-
-

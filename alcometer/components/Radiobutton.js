@@ -4,7 +4,7 @@ import { useState } from 'react'
 
 export default function Radiobutton({genderOption, onPress}) {
 
-const [choice, setChoice] = useState('Woman')
+const [choice, setChoice] = useState('Male')
 
 const handleRadiobuttonPress = (madeChoice) => {
   setChoice (madeChoice);

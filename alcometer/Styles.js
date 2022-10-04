@@ -28,6 +28,10 @@ export default StyleSheet.create({
       label:{
         fontSize:24,
         marginBottom:4
+      },
+        Input: {
+          height: 50,
+          backgroundColor: 'lightGrey',
 
       },
       result:{
@@ -37,18 +41,16 @@ export default StyleSheet.create({
       },
       calculateButton: {
         alignItems: 'center',
-        borderWidth: 1,
-        borderRadius: 12,
-        marginTop: 24,
-        paddingTop: 8,
-        paddingBottom: 8,
-        paddingRight: 12,
-        paddingLeft: 12,
+        justifyContent: 'center',
+        paddingVertical: 12,
+        paddingHorizontal: 32,
+        borderRadius: 4,
+        elevation: 3,
         backgroundColor: 'pink',
       },
       buttonText: {
         fontSize: 24,
-        color: '#fdead8'
+        color: 'white'
       },
       resultContainer: {
         alignItems: 'center',
