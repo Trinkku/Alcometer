@@ -44,13 +44,33 @@ export default StyleSheet.create({
         paddingBottom: 8,
         paddingRight: 12,
         paddingLeft: 12,
-        backgroundColor: '#08467c',
-        shadowOffset: {width: 2, height: 2},
-        shadowRadius: 1,
-        shadowOpacity: 0.45,
+        backgroundColor: 'pink',
       },
       buttonText: {
         fontSize: 24,
         color: '#fdead8'
-      }
+      },
+      resultContainer: {
+        alignItems: 'center',
+        justifyContent:'space-between',
+        marginTop: 64,
+        marginBottom: 24,
+      },
+      resultTextGreen: {
+        fontSize: 48,
+
+        color: '#00a650',
+        zIndex: 8
+      },
+      resultTextYellow: {
+        fontSize: 48,
+        color: '#e7fa09',
+        
+      },
+      resultTextRed: {
+        fontSize: 48,
+        color: '#ed1c24'
+      },
+   
+    
 })

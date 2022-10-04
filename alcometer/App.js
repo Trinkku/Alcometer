@@ -1,21 +1,21 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, SafeAreaView, ScrollView, TextInput, Pressable } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, ScrollView, TextInput, Pressable, Button, Alert } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import Styles from './Styles';
 import { useState, useCallback } from 'react';
 import Radiobutton from './components/Radiobutton';
-import Calculation from './components/Calculation;'
+import Calculation from './components/Calculation';
+
 
 
 export default function App() {
 
 
-const [weight, setWeight] = useState(0)
-const [bottles, setBottles] = useState(0)
-const [time, setTime] = useState(0)
-const [gender, setGender] = useState(0)
-const [promilles, setPromilles] = useState(1)
-
+const [weight, setWeight] = useState(0);
+const [bottles, setBottles] = useState(0);
+const [total, setTotal] = useState(0);
+const [hours, setHours] = useState(0);
+const [gender, setGender] = useState(0);
 //radiobuttoniin tarvitsemat tilamuuttujat
 const genderOptions=[
   {label: 'Woman', value: 'Woman'},
@@ -35,8 +35,7 @@ const [items, setItems] = useState([
 
 ]);
 //Dropdown 2-Time tilamuuttujat
-const [openAnother, setOpenAnother] = useState(false);
-const [anotherValue, setAnotherValue] = useState(null);
+const [openAnother, setOpenAnother] = useState(0);
 const [anotherItems, setAnotherItems] = useState([
   {label: '1 hours', value: 1},
   {label: '2 hours', value: 2},
@@ -50,15 +49,30 @@ DropDownPicker.setListMode("SCROLLVIEW");
 
 //tätä funktioo suoritetaan, kun drowdown- valikko avataan. Suljetaan toinen dropdown- valikko
 const onOpen = useCallback(() => {
-  setopenAnother(false);
+  setOpenAnother(false);
 }, []);
 
 const onAnotherOpen = useCallback(() => {
   setOpen(false);
 }, []);
 
-const calculate = () => {
+const calculatePromilles = () => {
 
+  if(weight >0){
+    if (bottles === 0){
+      Alert.alert(
+        "Amount of bottles is missing",
+        "Please select amount of drank bottles"
+      )
+      return
+    } else if (hours === 0){
+      Alert.alert(
+        "Time is missing",
+        "Please select time"
+      )
+      return
+    }
+  }
 let grams = (bottles * 0.33) * 8 * 4.5;
 let burning = weight / 10;
 let gramsLeft = grams - burning * hours;
@@ -70,7 +84,10 @@ if (gender === 'Woman'){
 else{
   result = gramsLeft /(weight* 0.7)
 }
-setPromilles(result);
+if(result < 0){
+  setTotal(result.toFixed(2));
+}else
+setTotal(0.00);
 }
 
   return (
@@ -95,10 +112,9 @@ setPromilles(result);
           <DropDownPicker 
                open={openAnother}
                onOpen={onAnotherOpen}
-               value={anotherValue}
+               value= {hours} setValue={setHours}
                items={anotherItems}
                setOpen={setOpenAnother}
-               setValue={setAnotherValue}
                setItems={setAnotherItems}
              /> 
           </View>
@@ -106,12 +122,14 @@ setPromilles(result);
           <Text style={Styles.label}>Gender</Text>
           <Radiobutton genderOption={genderOptions} onPress={(value) => {setGender}}/>
         </View>
-   <View>
-<c
-<Text style={Styles.result}> {promilles}</Text>
-   </View>
-  
-
+        <View style={Styles.resultContainer}>
+          <Text style={[total <= 0.5 ? Styles.resultTextGreen : total >= 0.5 && total <= 1.2 ? Styles.resultTextYellow : Styles.resultTextRed]}>{total}</Text>
+         {/*  <Button onPress={()=> calculatePromilles()} title={'Calculate'}></Button> */}
+         <Pressable onPress={calculatePromilles} title= {'calculate'}>
+        
+        
+        </Pressable>
+        </View>
       <StatusBar style='auto'/>
       </ScrollView>
 
