@@ -97,8 +97,6 @@ const calculate = () => {
   } 
 }
 
-DropDownPicker.setListMode("SCROLLVIEW")
-
   return (
     <SafeAreaView style={Styles.container}>
       <Text style={Styles.heading}>Alcometer</Text>
