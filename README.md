@@ -1,7 +1,7 @@
 Assignment for course "Web and hybrid technologies in mobile programming"
 
 Application created with Expo. It is optimized for IOS and tested with Iphone 13 pro. 
-Alcometer calculates an approximation of the blood alcohol level based on the users inputs. The radio-buttons are custom components.
+Alcometer calculates an approximation of the blood alcohol level based on the users inputs. The radio-buttons are from custom component. .
 User can enter weight, amount of drunken bottles, hours from first drunken bottle. 
 
 The result is shown with different color codes as follow:
